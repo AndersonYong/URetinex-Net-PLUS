@@ -52,7 +52,7 @@ See `unfolding_training.py` to find the supported hyper-params.
 
 Finally, train light and reflectance adjustment network using:
 ```
-bash fusion_adjust_trainined.sh
+bash fusion_adjust_trainineg.sh
 ```
 
 ## Evaluate
