@@ -203,7 +203,7 @@ class DecomModel(nn.Module):
         # ===============  feed data ====================
         input_img = None
         L_init = None
-        assert (opts.img_light == "low" or opts.img_light == "high")
+        assert (self.opts.img_light == "low" or self.opts.img_light == "high")
         if self.opts.img_light == "low":
             input_img = batch["low_light_img"]
             L_init, _ = torch.max(input_img, dim=1)
@@ -252,14 +252,10 @@ class AdjustModel(nn.Module):
         self.adjust_model = define_modelA(self.opts)
         self.fusion_model = define_compositor(self.opts)
         # loading decomposition model
-        self.model_Decom_low = Decom()
-        self.model_Decom_high = Decom()
-        self.model_Decom_low = load_param4Decom(self.model_Decom_low, self.opts.Decom_model_low_path)
-        self.model_Decom_high = load_param4Decom(self.model_Decom_high, self.opts.Decom_model_high_path)
+        self.model_Decom_low, self.model_Decom_high = load_decom(self.opts)
         
         # loading R; old_model_opts; and L model
-        old_opts, self.model_R, self.model_L = load_unfolding(self.opts)
-        self.one_step_model_opts = old_opts
+        self.unfolding_model_opts, self.model_R, self.model_L = load_unfolding(self.opts)
         self.P = P()
         self.Q = Q()
 
@@ -296,13 +292,12 @@ class AdjustModel(nn.Module):
 
     def unfolding_inference(self, input_low_img):
         R_results = []
-        print("unfolding stage: %d"%self.one_step_model_opts.round)
-        for i in range(self.one_step_model_opts.round):
+        for i in range(self.unfolding_model_opts.round):
             if i == 0:
                 [P, Q] = self.model_Decom_low(input_low_img)
             else:
-                w_p = (self.one_step_model_opts.gamma + self.one_step_model_opts.Roffset * i)
-                w_q = (self.one_step_model_opts.lamda + self.one_step_model_opts.Loffset * i)
+                w_p = (self.unfolding_model_opts.gamma + self.unfolding_model_opts.Roffset * i)
+                w_q = (self.unfolding_model_opts.lamda + self.unfolding_model_opts.Loffset * i)
                 P = self.P(I=input_low_img, Q=Q, R=R, gamma=w_p)
                 Q = self.Q(I=input_low_img, P=P, L=L, lamda=w_q) 
             R = self.model_R(r=P, l=Q)
@@ -314,10 +309,8 @@ class AdjustModel(nn.Module):
     
     def make_high_L(self, input_high_img):
         if self.model_Decom_high is not None:
-            print("using net for High_L ratio computing")
             [_, Q_high] = self.model_Decom_high(input_high_img)
         else:
-            print("using max channel for High_L ratio computing")
             Q_high, _ =  torch.max(input_high_img, dim=1)
             Q_high = Q_high.unsqueeze(1)
         return Q_high

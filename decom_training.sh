@@ -1,5 +1,5 @@
 python decom_training.py --size 48 \
-                            --epoch 20 \
+                            --epoch 2000 \
                             --batch_size 4 \
                             --eval_epoch 10 \
                             --n_cpu 1\

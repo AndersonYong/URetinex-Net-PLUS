@@ -169,16 +169,16 @@ if __name__ == "__main__":
     parser.add_argument('--eval_epoch', type=int, default=0)
     parser.add_argument('--freeze_decom', action="store_true")
     parser.add_argument('--second_stage', type=str, default="False")
-    parser.add_argument('--concat_L', action='store_false')
+    parser.add_argument('--concat_L', default=True, action='store_false')
     parser.add_argument('--gpu_id', type=str, default=1)
     
     # dataset dir
-    parser.add_argument('--patch_low', type=str, default="/data/wengjian/low-light-enhancement/GSB/HSV_color/dataset/LOLdataset/our485/low")
-    parser.add_argument('--patch_high', type=str, default="/data/wengjian/low-light-enhancement/GSB/HSV_color/dataset/LOLdataset/our485/high")
+    parser.add_argument('--patch_low', type=str, default="")
+    parser.add_argument('--patch_high', type=str, default="")
 
-    parser.add_argument('--eval_low', type=str, default="/data/wengjian/low-light-enhancement/GSB/HSV_color/dataset/LOLdataset/eval15/low")
-    parser.add_argument('--eval_high', type=str, default="/data/wengjian/low-light-enhancement/GSB/HSV_color/dataset/LOLdataset/eval15/high")
-    parser.add_argument('--saving_eval_dir', type=str, default="/data/wengjian/low-light-enhancement/pami/result/unfolding")
+    parser.add_argument('--eval_low', type=str, default="")
+    parser.add_argument('--eval_high', type=str, default="")
+    parser.add_argument('--saving_eval_dir', type=str, default="")
 
     # math model penalty
     parser.add_argument('--gamma', type=float, default=1e-2)

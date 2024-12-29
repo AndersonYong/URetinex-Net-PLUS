@@ -90,7 +90,13 @@ def val(opts, epoch, model, eval_dataloader):
     return {l: (metric[l] / float(iteration+1)) for l in metric.keys()}
 
 def create_suffix(opts):
-    t_stage = os.path.basename(opts.pretrain_unfolding_model_path).split('--A_t_')[1].split('_')[0]
+    t_stage = None
+    if os.path.exists(opts.pretrain_unfolding_model_path):
+        unfolding_opts = torch.load(opts.pretrain_unfolding_model_path)["opts"]
+        t_stage = unfolding_opts.round
+    else :
+        print("pretrained unfolding model path doesn't exist")
+        exit()
     RLC_suffix = "layers=" + str(opts.fusion_layers) + "-stage=%s-"%t_stage + "size=%d-"%opts.size + \
         "batch=%d-"%opts.batch_size + opts.A_model + "_A" + "--" +  opts.fusion_model + "_fusion" + "-NetHigh:" + str(opts.net_L)
     one_step_model_suffix = "-Loss:[" + opts.adjust_L_loss +  "]-weights:[l_grad:%0.1f-l_spa:%0.2f"%(opts.l_grad, opts.l_spa) + "_min_ratio:%0.2f"%opts.min_ratio + "]"
@@ -120,8 +126,6 @@ def run(opts, model):
                     shuffle=False,
                     drop_last = False,
                     num_workers=opts.n_cpu)
-    print(len(iter(train_dataloader)))
-    print(len(iter(eval_dataloader)))
 
     if not os.path.exists(opts.adjust_model_dir):
         os.makedirs(opts.adjust_model_dir)
@@ -165,7 +169,7 @@ if __name__ == "__main__":
     parser.add_argument('--current_epoch', type=int, default=0)
     parser.add_argument('--eval_epoch', type=int, default=None)
     parser.add_argument('--fusion_layers', nargs='+', type=int, default=None)
-    parser.add_argument('--net_L', action="store_false")
+    parser.add_argument('--net_L', default=False, action="store_true")
     parser.add_argument('--gpu_id', type=str, default=None)
     parser.add_argument('--milestones', nargs='+', type=int, default=[None])
     parser.add_argument('--min_ratio', type=float, default=None)
@@ -185,14 +189,14 @@ if __name__ == "__main__":
     # model config
     parser.add_argument('--A_model', type=str, default=None)
     parser.add_argument('--fusion_model', type=str, default=None)
-    parser.add_argument('--init', type=str, default="normal")
+    parser.add_argument('--init', type=str, default="xavier")
     parser.add_argument('--reload', action="store_false")
 
     # checkpoints config
     parser.add_argument('--adjust_model_dir', type=str, default=None)
     parser.add_argument('--model_path', type=str, default="")
-    parser.add_argument('--Decom_model_low_path', type=str, default="/data/wengjian/low-light-enhancement/pami/pretrained_model/decom4layers/decom-L_supervised-4layers")
-    parser.add_argument('--Decom_model_high_path', type=str, default="/data/wengjian/low-light-enhancement/pami/pretrained_model/decom4layers/decom_onlyHigh_0.1L_2.2gamma_0.1Lawareep340")
+    parser.add_argument('--Decom_model_low_path', type=str, default="")
+    parser.add_argument('--Decom_model_high_path', type=str, default="")
     parser.add_argument('--pretrain_unfolding_model_path', type=str, default=None)
 
     opts = parser.parse_args()

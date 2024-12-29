@@ -185,9 +185,9 @@ def define_compositor(opts):
     return model_fusion
 
 def define_modelA(opts):
-    if opts.A_model == "naive_res":
-        from network.illumination_adjustment import Adjust_naive_res
-        model_A = Adjust_naive_res(opts)
+    if opts.A_model == "naive":
+        from network.illumination_adjustment import Adjust_naive
+        model_A = Adjust_naive(opts)
     else:
         print("model A not implemented")
         exit()
@@ -269,7 +269,7 @@ def load_decom(fusion_opts):
             exit()
         return model
     decom_low_model = create_and_load(fusion_opts.Decom_model_low_path)
-    if ("net_L" not in fusion_opts) or ("net_L" in fusion_opts and fusion_opts.net_L == True) or "R_" in fusion_opts.adjust_L_loss:
+    if ("net_L" in fusion_opts and fusion_opts.net_L == True):
         decom_high_model = create_and_load(fusion_opts.Decom_model_high_path)
     else:
         decom_high_model = None
@@ -293,8 +293,8 @@ def load_unfolding(opts):
         exit()
 
 def load_AdjustFusion(opts):
-    if os.path.exists(opts.old_model_A_path):
-        checkpoint = torch.load(opts.old_model_A_path)
+    if os.path.exists(opts.fusion_model_A_path):
+        checkpoint = torch.load(opts.fusion_model_A_path)
         AdjustFusion_opts = checkpoint["opts"]
         model_A = define_modelA(AdjustFusion_opts)
         model_A.load_state_dict(checkpoint['state_dict']['model_A'])
