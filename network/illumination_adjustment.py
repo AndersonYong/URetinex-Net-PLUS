@@ -4,7 +4,7 @@ import torch.nn as nn
 from network.architecture import get_batchnorm_layer, get_conv2d_layer
 import torch.nn.functional as F
 
-# using Simple Convolution -- KinD
+# using Simple Convolution 
 class Adjust_naive(nn.Module):
     def __init__(self, opt):
         super().__init__()
