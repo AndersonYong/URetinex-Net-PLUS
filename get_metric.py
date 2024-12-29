@@ -102,32 +102,3 @@ def evaluate_all(dataset, alg_name, opts, file_path):
     metric_dicts = evaluate(pred_dir, gt_dir, transform, alg_name, dataset, mean=True)
     write_metric_to_file(alg_name+"-----%s"%dataset, metric_dicts, file_path)
   
-    
-def main():
-    datasets = ["LOL",
-                "SCIE",
-                #"VE-LOL_SYN"
-            ]
-    eval_algorithm = [#"NPE",
-                    #"SRIE",
-                    #"LIME",
-                    #"RRM",
-                    #"LR3M",
-                    #"RetinexNet",
-                    #"KinD",
-                    #"ZeroDCE",
-                    #"RUAS",
-                    #"KinD++",
-                    #"AGLLNet",
-                    #"URetinex-Net",
-                    #"URetinexNet++++++++"
-                   ]
-    eval_algorithm = ["cvpr_stack"]
-    file_path = "/data/wengjian/low-light-enhancement/pami/evaluate_data/metric_check.txt"
-    for dataset in datasets:
-        write_dataset(dataset, file_path)
-        for alg in eval_algorithm:
-            evaluate_fucking_shit(dataset=dataset, alg_name=alg, file_path=file_path)
-
-if __name__ == "__main__":
-    main()
