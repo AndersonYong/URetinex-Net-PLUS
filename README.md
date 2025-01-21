@@ -73,6 +73,7 @@ Metric would exactly match the paper:
 If you want to run single image, you may need to specify the enhance ratio, and input low-light image. Currently you may need to call `run_one_image` from `test.py` by your self, a more convinient interface would be supported in the future :)
 
 ## Citation
+```
 @article{wu2025interpretable,
   title={Interpretable Optimization-Inspired Unfolding Network for Low-Light Image Enhancement},
   author={Wu, Wenhui and Weng, Jian and Zhang, Pingping and Wang, Xu and Yang, Wenhan and Jiang, Jianmin},
@@ -80,6 +81,7 @@ If you want to run single image, you may need to specify the enhance ratio, and 
   year={2025},
   publisher={IEEE}
 }
+```
 
 ***Noted that the code is only for non-commercial use! should you have any queries, contact me at***  wj1997s@163.com
 
